@@ -1,13 +1,16 @@
-import React from 'react';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css'
+import React, { Component } from 'react'
+import SongsContainer from '../src/containers/SongsContainer'
 
-function App() {
-  return (
-    <div className="container">
-      <h1>What's up</h1>
-    </div>
-  );
+export class App extends Component {
+  render() {
+    return (
+      <div>
+        <SongsContainer />
+      </div>
+    )
+  }
 }
 
-export default App;
+export default App
