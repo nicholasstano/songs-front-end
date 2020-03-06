@@ -21,14 +21,31 @@ export class AddSongForm extends Component {
             },
         })
             .then(res => res.json())
-            .then(data => {
-                let theSong = data.data.find(song => song.title.toLowerCase().includes(this.state.title.toLowerCase())
+            .then(songInfo => {
+                let theSong = songInfo.data.find(song => song.title.toLowerCase().includes(this.state.title.toLowerCase())
                     &&
                     song.artist.name.toLowerCase().includes(this.state.artist.toLowerCase())
                     &&
                     song.album.title.toLowerCase().includes(this.state.album.toLowerCase()))
                 if (typeof theSong === "object") {
-                    console.log(theSong.title_short, theSong.artist.name, theSong.album.title, theSong.link)
+                    fetch(`http://localhost:4000/songs`, {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            rank: 1,
+                            title: theSong.title_short,
+                            artist: theSong.artist.name,
+                            album: theSong.album.title,
+                            sample: theSong.link
+                        })
+                    })
+                        .then(res => res.json())
+                        .then(addedSong => {
+                            console.log(addedSong)
+                        })
                 }
                 else {
                     alert("Song Not Found! Please make sure all fields are typed correctly!")
