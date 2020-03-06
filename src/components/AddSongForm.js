@@ -14,11 +14,32 @@ export class AddSongForm extends Component {
 
     onSubmit = (event) => {
         event.preventDefault()
-        console.log(this.state.title)
-        fetch(`https://deezerdevs-deezer.p.rapidapi.com/${this.state.title}`)
+        fetch(`https://deezerdevs-deezer.p.rapidapi.com/search?q=${this.state.title}+${this.state.album}+${this.state.artist}`, {
+            headers: {
+                "x-rapidapi-host": "deezerdevs-deezer.p.rapidapi.com",
+                "x-rapidapi-key": "7d26b11e9fmsh70206a9d62dc8f9p15e225jsn5334110e63bb"
+            },
+        })
             .then(res => res.json())
-            .then(data => console.log(data.message))
+            .then(data => {
+                let theSong = data.data.find(song => song.title.toLowerCase().includes(this.state.title.toLowerCase())
+                    &&
+                    song.artist.name.toLowerCase().includes(this.state.artist.toLowerCase())
+                    &&
+                    song.album.title.toLowerCase().includes(this.state.album.toLowerCase()))
+                if (typeof theSong === "object") {
+                    console.log(theSong.title_short, theSong.artist.name, theSong.album.title, theSong.link)
+                }
+                else {
+                    alert("Song Not Found! Please make sure all fields are typed correctly!")
+                }
+            })
+            .catch(err => {
+                console.log(err)
+            })
     }
+
+
 
     render() {
         return (
