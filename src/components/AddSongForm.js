@@ -44,7 +44,7 @@ export class AddSongForm extends Component {
                     })
                         .then(res => res.json())
                         .then(addedSong => {
-                            console.log(addedSong)
+                            this.props.renderAddedSong(addedSong)
                         })
                 }
                 else {
@@ -54,6 +54,13 @@ export class AddSongForm extends Component {
             .catch(err => {
                 console.log(err)
             })
+        this.setState({
+            rank: null,
+            title: "",
+            artist: "",
+            album: "",
+            sample: ""
+        })
     }
 
 
