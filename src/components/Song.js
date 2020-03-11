@@ -1,13 +1,14 @@
 import React from 'react'
+import AudiotrackIcon from '@material-ui/icons/Audiotrack';
 
 export default function Song(props) {
     return (
         <tr>
-            <th scope="row">{props.song.rank}</th>
+            <td>{props.song.rank}</td>
             <td>{props.song.title}</td>
             <td>{props.song.album}</td>
             <td>{props.song.artist}</td>
-            <td><a target="_blank" href={props.song.sample}>Audio Sample</a></td>
+            <td><a target="_blank" rel="noopener noreferrer" href={props.song.sample}><AudiotrackIcon /></a></td>
         </tr>
     )
 }

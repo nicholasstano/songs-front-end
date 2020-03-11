@@ -13,8 +13,9 @@ export class AddSongForm extends Component {
     handleChange = e => this.setState({ [e.target.name]: e.target.value })
 
     onSubmit = (event) => {
+        const deezerSearchUrl = "https://deezerdevs-deezer.p.rapidapi.com/search?q="
         event.preventDefault()
-        fetch(`https://deezerdevs-deezer.p.rapidapi.com/search?q=${this.state.title}+${this.state.album}+${this.state.artist}`, {
+        fetch(`${deezerSearchUrl}${this.state.title}+${this.state.album}+${this.state.artist}`, {
             headers: {
                 "x-rapidapi-host": "deezerdevs-deezer.p.rapidapi.com",
                 "x-rapidapi-key": "7d26b11e9fmsh70206a9d62dc8f9p15e225jsn5334110e63bb"
@@ -22,11 +23,15 @@ export class AddSongForm extends Component {
         })
             .then(res => res.json())
             .then(songInfo => {
-                let theSong = songInfo.data.find(song => song.title.toLowerCase().includes(this.state.title.toLowerCase())
+                let songTitle = this.state.title.toLowerCase()
+                let artistName = this.state.artist.toLowerCase()
+                let albumTitle = this.state.album.toLowerCase()
+                let newlyAddedRank = this.props.allSongs.length + 1
+                let theSong = songInfo.data.find(song => song.title.toLowerCase().includes(songTitle)
                     &&
-                    song.artist.name.toLowerCase().includes(this.state.artist.toLowerCase())
+                    song.artist.name.toLowerCase().includes(artistName)
                     &&
-                    song.album.title.toLowerCase().includes(this.state.album.toLowerCase()))
+                    song.album.title.toLowerCase().includes(albumTitle))
                 if (typeof theSong === "object") {
                     fetch(`http://localhost:4000/songs`, {
                         method: "POST",
@@ -35,7 +40,7 @@ export class AddSongForm extends Component {
                             'Accept': 'application/json'
                         },
                         body: JSON.stringify({
-                            rank: 1,
+                            rank: newlyAddedRank,
                             title: theSong.title_short,
                             artist: theSong.artist.name,
                             album: theSong.album.title,
@@ -62,8 +67,6 @@ export class AddSongForm extends Component {
             sample: ""
         })
     }
-
-
 
     render() {
         return (
