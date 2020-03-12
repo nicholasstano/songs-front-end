@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import AddSongForm from '../components/AddSongForm.js'
 import Song from '../components/Song.js'
 import EditSong from '../components/EditSong.js'
-import DeleteIcon from '@material-ui/icons/Delete';
 
 export class songsContainer extends Component {
 
@@ -18,6 +17,19 @@ export class songsContainer extends Component {
         this.setState({ songs: [...this.state.songs, song.song] })
     }
 
+    removeSong = (songId) => {
+        let newAllSongs = this.state.songs.filter(s => s._id !== songId)
+        this.setState({ songs: newAllSongs })
+    }
+
+    updateSongs = (song) => {
+        console.log(song)
+        this.state.songs.filter(s => s._id === song._id ? console.log(s) : null)
+        console.log(this.state.songs.slice().map(s => s._id === song._id ? song : s))
+        let updatedSongs = this.state.songs.map(s => s._id === song._id ? song : s)
+        this.setState({ songs: updatedSongs })
+    }
+
     toggleEditView = () => {
         if (this.state.editor) {
             this.setState({ editor: false, sampDel: "delete" })
@@ -29,7 +41,7 @@ export class songsContainer extends Component {
 
     render() {
         let songComponents = this.state.songs.map(song => <Song song={song} key={song._id} />)
-        let editSongComponents = this.state.songs.map(song => <EditSong song={song} key={song._id} />)
+        let editSongComponents = this.state.songs.map(song => <EditSong song={song} key={song._id} removeSong={this.removeSong} updateSongs={this.updateSongs} />)
 
         return (
             <div className="container">
