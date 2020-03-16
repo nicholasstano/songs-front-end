@@ -10,7 +10,23 @@ export class songsContainer extends Component {
     componentDidMount() {
         fetch(`http://localhost:4000/songs`)
             .then(res => res.json())
-            .then(songs => this.setState({ songs: songs }))
+            .then(songs => {
+                let sortedSongs = songs.sort(function (a, b) {
+                    return a.rank - b.rank
+                })
+                this.setState({ songs: sortedSongs })
+            })
+    }
+
+    updateRank = () => {
+        fetch(`http://localhost:4000/songs`)
+            .then(res => res.json())
+            .then(songs => {
+                let sortedSongs = songs.sort(function (a, b) {
+                    return a.rank - b.rank
+                })
+                this.setState({ songs: sortedSongs })
+            })
     }
 
     renderAddedSong = (song) => {
@@ -23,9 +39,6 @@ export class songsContainer extends Component {
     }
 
     updateSongs = (song) => {
-        console.log(song)
-        this.state.songs.filter(s => s._id === song._id ? console.log(s) : null)
-        console.log(this.state.songs.slice().map(s => s._id === song._id ? song : s))
         let updatedSongs = this.state.songs.map(s => s._id === song._id ? song : s)
         this.setState({ songs: updatedSongs })
     }
@@ -41,7 +54,7 @@ export class songsContainer extends Component {
 
     render() {
         let songComponents = this.state.songs.map(song => <Song song={song} key={song._id} />)
-        let editSongComponents = this.state.songs.map(song => <EditSong song={song} key={song._id} removeSong={this.removeSong} updateSongs={this.updateSongs} />)
+        let editSongComponents = this.state.songs.map(song => <EditSong song={song} key={song._id} removeSong={this.removeSong} updateSongs={this.updateSongs} updateRank={this.updateRank} />)
 
         return (
             <div className="container">
