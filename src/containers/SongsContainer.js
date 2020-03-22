@@ -2,21 +2,26 @@ import React, { Component } from 'react'
 import AddSongForm from '../components/AddSongForm.js'
 import Song from '../components/Song.js'
 import EditSong from '../components/EditSong.js'
+import { getSongs } from '../actions/songActions'
+import { connect } from 'react-redux'
 
-export class songsContainer extends Component {
+import PropTypes from 'prop-types'
 
-    state = { songs: [], editor: true, sampDel: "sample" }
+export class SongsContainer extends Component {
+
+    state = { editor: true, sampDel: "sample" }
 
     componentDidMount() {
-        fetch(`http://localhost:4000/songs`)
-            .then(res => res.json())
-            .then(songs => {
-                let sortedSongs = songs.sort(function (a, b) {
-                    return a.rank - b.rank
-                })
-                this.setState({ songs: sortedSongs })
-            })
+        this.props.getSongs()
     }
+    // fetch(`http://localhost:4000/songs`)
+    //     .then(res => res.json())
+    //     .then(songs => {
+    //         let sortedSongs = songs.sort(function (a, b) {
+    //             return a.rank - b.rank
+    //         })
+    //         this.setState({ songs: sortedSongs })
+    //     })
 
     updateRank = () => {
         fetch(`http://localhost:4000/songs`)
@@ -53,12 +58,14 @@ export class songsContainer extends Component {
     }
 
     render() {
-        let songComponents = this.state.songs.map(song => <Song song={song} key={song._id} />)
-        let editSongComponents = this.state.songs.map(song => <EditSong song={song} key={song._id} removeSong={this.removeSong} updateSongs={this.updateSongs} updateRank={this.updateRank} />)
+        const { songs } = this.props.songs
+        console.log("SONGS", songs)
+        let songComponents = songs.map(song => <Song song={song} key={song._id} />)
+        let editSongComponents = songs.map(song => <EditSong song={song} key={song._id} removeSong={this.removeSong} updateSongs={this.updateSongs} updateRank={this.updateRank} />)
 
         return (
             <div className="container">
-                <AddSongForm allSongs={this.state.songs} renderAddedSong={this.renderAddedSong} />
+                <AddSongForm allSongs={songs} renderAddedSong={this.renderAddedSong} />
                 <br />
                 {this.state.editor ?
                     <button onClick={this.toggleEditView}>Click To Edit</button> :
@@ -66,7 +73,7 @@ export class songsContainer extends Component {
                 <br />
                 <br />
 
-                {this.state.songs.length > 0 ?
+                {songs.length > 0 ?
                     (<table className="table table-striped table-dark">
                         <thead>
                             <tr>
@@ -86,4 +93,13 @@ export class songsContainer extends Component {
     }
 }
 
-export default songsContainer
+const mapStateToProps = state => ({
+    songs: state.songs
+})
+
+SongsContainer.propTypes = {
+    getSongs: PropTypes.func.isRequired,
+    songs: PropTypes.object.isRequired
+}
+
+export default connect(mapStateToProps, { getSongs })(SongsContainer)
