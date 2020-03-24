@@ -10,9 +10,13 @@ export const getSongs = () => dispatch => {
         )
 }
 
-        // {
-        //         let sortedSongs = songs.sort(function (a, b) {
-        //             return a.rank - b.rank
-        //         })
-        // this.setState({ songs: sortedSongs })
-        //     })
+export const deleteSong = (id) => dispatch => {
+    fetch(`http://localhost:4000/songs/${id}`, {
+        method: "Delete"
+    })
+        .then(res => res.json())
+        .then(songs => dispatch({
+            type: DELETE_SONG,
+            payload: id
+        }))
+}

@@ -1,5 +1,9 @@
 import React, { Component } from 'react'
 import DeleteIcon from '@material-ui/icons/Delete';
+import { deleteSong } from '../actions/songActions'
+import { connect } from 'react-redux'
+
+import PropTypes from 'prop-types'
 
 export class EditSong extends Component {
 
@@ -7,12 +11,8 @@ export class EditSong extends Component {
 
     handleChange = e => this.setState({ [e.target.name]: e.target.value })
 
-    deleteSong = () => {
-        fetch(`http://localhost:4000/songs/${this.props.song._id}`, {
-            method: "Delete"
-        })
-            .then(res => res.json())
-            .then(data => this.props.removeSong(data.id))
+    deleteSongClick = (id) => {
+        this.props.deleteSong(id)
     }
 
     updateRank = (event) => {
@@ -56,10 +56,19 @@ export class EditSong extends Component {
                 <td>{this.props.song.title}</td>
                 <td>{this.props.song.album}</td>
                 <td>{this.props.song.artist}</td>
-                <td><DeleteIcon onClick={this.deleteSong} /></td>
+                <td><DeleteIcon onClick={() => this.deleteSongClick(this.props.song._id)} /></td>
             </tr>
         )
     }
 }
 
-export default EditSong
+EditSong.propTypes = {
+    deleteSong: PropTypes.func.isRequired,
+    song: PropTypes.object.isRequired
+}
+
+const mapStateToProps = (state) => ({
+    id: state._id
+})
+
+export default connect(mapStateToProps, { deleteSong })(EditSong)

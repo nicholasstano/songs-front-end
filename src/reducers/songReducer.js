@@ -11,6 +11,11 @@ export default function (state = initialState, action) {
                 ...state,
                 songs: action.payload
             }
+        case DELETE_SONG:
+            return {
+                ...state,
+                songs: state.songs.filter(song => song._id !== action.payload)
+            }
         default:
             return state
     }
