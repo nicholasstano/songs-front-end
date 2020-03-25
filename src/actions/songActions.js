@@ -20,3 +20,20 @@ export const deleteSong = (id) => dispatch => {
             payload: id
         }))
 }
+
+export const addSong = (newSong) => dispatch => {
+    console.log(newSong)
+    fetch(`http://localhost:4000/songs`, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify(newSong)
+    })
+        .then(res => res.json())
+        .then(song => dispatch({
+            type: ADD_SONG,
+            payload: song
+        }))
+}

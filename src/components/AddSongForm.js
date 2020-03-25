@@ -1,4 +1,8 @@
 import React, { Component } from 'react'
+import { addSong } from '../actions/songActions'
+import { connect } from 'react-redux'
+
+import PropTypes from 'prop-types'
 
 export class AddSongForm extends Component {
 
@@ -13,8 +17,8 @@ export class AddSongForm extends Component {
     handleChange = e => this.setState({ [e.target.name]: e.target.value })
 
     onSubmit = (event) => {
-        const deezerSearchUrl = "https://deezerdevs-deezer.p.rapidapi.com/search?q="
         event.preventDefault()
+        const deezerSearchUrl = "https://deezerdevs-deezer.p.rapidapi.com/search?q="
         fetch(`${deezerSearchUrl}${this.state.title}+${this.state.album}+${this.state.artist}`, {
             headers: {
                 "x-rapidapi-host": "deezerdevs-deezer.p.rapidapi.com",
@@ -33,24 +37,14 @@ export class AddSongForm extends Component {
                     &&
                     song.album.title.toLowerCase().includes(albumTitle))
                 if (typeof theSong === "object") {
-                    fetch(`http://localhost:4000/songs`, {
-                        method: "POST",
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            rank: newlyAddedRank,
-                            title: theSong.title_short,
-                            artist: theSong.artist.name,
-                            album: theSong.album.title,
-                            sample: theSong.link
-                        })
-                    })
-                        .then(res => res.json())
-                        .then(addedSong => {
-                            this.props.renderAddedSong(addedSong)
-                        })
+                    const newSong = {
+                        rank: newlyAddedRank,
+                        title: theSong.title_short,
+                        artist: theSong.artist.name,
+                        album: theSong.album.title,
+                        sample: theSong.link
+                    }
+                    this.props.addSong(newSong)
                 }
                 else {
                     alert("Song Not Found! Please make sure all fields are typed correctly!")
@@ -89,4 +83,13 @@ export class AddSongForm extends Component {
     }
 }
 
-export default AddSongForm
+const mapStateToProps = state => ({
+    songs: state.songs
+})
+
+AddSongForm.propTypes = {
+    addSong: PropTypes.func.isRequired,
+    songs: PropTypes.object.isRequired
+}
+
+export default connect(mapStateToProps, { addSong })(AddSongForm)
