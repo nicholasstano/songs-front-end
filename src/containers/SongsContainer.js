@@ -14,14 +14,6 @@ export class SongsContainer extends Component {
     componentDidMount() {
         this.props.getSongs()
     }
-    // fetch(`http://localhost:4000/songs`)
-    //     .then(res => res.json())
-    //     .then(songs => {
-    //         let sortedSongs = songs.sort(function (a, b) {
-    //             return a.rank - b.rank
-    //         })
-    //         this.setState({ songs: sortedSongs })
-    //     })
 
     updateRank = () => {
         fetch(`http://localhost:4000/songs`)
@@ -59,10 +51,9 @@ export class SongsContainer extends Component {
 
     render() {
         const { songs } = this.props.songs
-        console.log("SONGS", songs)
+        console.log(songs)
         let songComponents = songs.map(song => <Song song={song} key={song._id} />)
-        let editSongComponents = songs.map(song => <EditSong song={song} key={song._id} removeSong={this.removeSong} updateSongs={this.updateSongs} updateRank={this.updateRank} />)
-
+        let editSongComponents = songs.map(song => <EditSong beef={"beef"} song={song} key={song._id} removeSong={this.removeSong} updateSongs={this.updateSongs} updateRank={this.updateRank} />)
         return (
             <div className="container">
                 <AddSongForm allSongs={songs} renderAddedSong={this.renderAddedSong} />

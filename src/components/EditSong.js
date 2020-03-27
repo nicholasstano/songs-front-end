@@ -1,13 +1,15 @@
 import React, { Component } from 'react'
 import DeleteIcon from '@material-ui/icons/Delete';
-import { deleteSong } from '../actions/songActions'
+import { deleteSong, editSong, getSongs } from '../actions/songActions'
 import { connect } from 'react-redux'
 
 import PropTypes from 'prop-types'
 
 export class EditSong extends Component {
 
-    state = { rank: this.props.song.rank }
+    state = {
+        rank: this.props.song.rank
+    }
 
     handleChange = e => this.setState({ [e.target.name]: e.target.value })
 
@@ -17,31 +19,17 @@ export class EditSong extends Component {
 
     updateRank = (event) => {
         event.preventDefault()
-        fetch(`http://localhost:4000/songs/${this.props.song._id}`, {
-            method: "Put",
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(
-                {
-                    rank: this.state.rank,
-                    title: this.props.title,
-                    artist: this.props.name,
-                    album: this.props.title,
-                    sample: this.props.sample
-                })
-        })
-            .then(res => res.json())
-            .then(data => {
-                fetch(`http://localhost:4000/songs/${data._id}`)
-                    .then(res => res.json())
-                    .then(data => {
-                        this.props.updateSongs(data)
-                        this.props.updateRank()
-                    })
-            })
+        const editedSong = {
+            rank: this.state.rank,
+            _id: this.props.song._id,
+            title: this.props.song.title,
+            artist: this.props.song.artist,
+            album: this.props.song.album,
+            sample: this.props.song.sample
+        }
+        this.props.editSong(editedSong)
+        this.props.getSongs()
     }
-
     render() {
         return (
             <tr>
@@ -62,13 +50,4 @@ export class EditSong extends Component {
     }
 }
 
-EditSong.propTypes = {
-    deleteSong: PropTypes.func.isRequired,
-    song: PropTypes.object.isRequired
-}
-
-const mapStateToProps = (state) => ({
-    id: state._id
-})
-
-export default connect(mapStateToProps, { deleteSong })(EditSong)
+export default connect(null, { deleteSong, editSong, getSongs })(EditSong)

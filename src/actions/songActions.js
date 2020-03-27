@@ -5,7 +5,7 @@ export const getSongs = () => dispatch => {
         .then(res => res.json())
         .then(songs => dispatch({
             type: GET_SONGS,
-            payload: songs
+            payload: songs.sort((a, b) => { return a.rank - b.rank })
         })
         )
 }
@@ -22,7 +22,6 @@ export const deleteSong = (id) => dispatch => {
 }
 
 export const addSong = (newSong) => dispatch => {
-    console.log(newSong)
     fetch(`http://localhost:4000/songs`, {
         method: "POST",
         headers: {
@@ -34,6 +33,22 @@ export const addSong = (newSong) => dispatch => {
         .then(res => res.json())
         .then(song => dispatch({
             type: ADD_SONG,
+            payload: song
+        }))
+}
+
+export const editSong = (editedSong) => dispatch => {
+    console.log(editedSong._id)
+    fetch(`http://localhost:4000/songs/${editedSong._id}`, {
+        method: "Put",
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(editedSong)
+    })
+        .then(res => res.json())
+        .then(song => dispatch({
+            type: EDIT_SONG,
             payload: song
         }))
 }
